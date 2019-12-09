@@ -34,6 +34,7 @@ ClientApp/out-tsc
 # Only exists if Bazel was run
 ClientApp/bazel-out
 ClientApp/node_modules
+ClientApp/package-lock.json
 
 
 # MSTest test Results
