@@ -3,6 +3,7 @@ export class Product {
     Count:number;
     Cost:number;
     Title: string;
+    DisplayText: string;
     constructor() { }
   };
 

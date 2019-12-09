@@ -11,28 +11,33 @@
         <div style="background-color: lightgreen;"  class="container-fluid"> 
             <div class="row"> 
                 <div class="col-sm-2"><label class="label" >Product</label></div> 
-                <div class="col-sm-3"><SELECT class="text-monospace form-control" id='selHomeProducts' ></SELECT></div> 
+                <div class="col-sm-4">
+                  <select class="text-monospace form-control" id="selHomeProducts" name="selHomeProducts" [(ngModel)]="selectedProduct" >
+                      <option *ngFor="let c of Products" [ngValue]="c"> {{c.DisplayText}} </option>
+                  </select>                            
+          
+                </div> 
             </div>
             <div class="row"> 
               <div class="col-sm-2"><label class="label" ># Bought</label></div> 
-              <div class="col-sm-1"><input id='txtHomeCount'  type="number" min="1" step="1" class="form-control" /></div>
+              <div class="col-sm-1"><input type="number" min="1" step="1" class="form-control" [(ngModel)]="selectedPurchase.Count" /></div>
           </div>  
           <div class="row"> 
             <div class="col-sm-2"><label class="label" >Cost Override</label></div> 
-            <div class="col-sm-1"><input id='txtHomeCostOverride'  type="number" min="0.01" step="1.00" class="form-control" /></div>
+            <div class="col-sm-2"><input type="number" min="0.01" step="1.00" class="form-control" [(ngModel)]="selectedPurchase.CostOverride" /></div>
         </div>  
         <div class="row"> 
             <div class="col-sm-2"><label class="label" >Date of Purchase</label></div> 
-            <div class="col-sm-2"><input id='txtHomeDate' type="date" class="form-control" /></div>
+            <div class="col-sm-3"><input type="date" class="form-control" [(ngModel)]="selectedPurchase.PurchaseDate"/></div>
         </div>  
         <div class="row"> 
           <div class="col-sm-2"></div> 
       </div>  
       <div class="row"> 
-                <div class="col-sm-1"><button class="btn btn-primary" id='btnAddPurchase' >Add</button></div> 
-                <div class="col-sm-1"><button class="btn btn-primary" id='btnClearPurchase' >Clear</button></div> 
-                <div class="col-sm-1"><button class="btn btn-primary" disabled id='btnUpdatePurchase' >Update</button></div> 
-                <div class="col-sm-1"><button class="btn btn-primary" disabled id='btnDelPurchase' >Del</button></div> 
+                <div class="col-sm-1"><button class="btn btn-primary" [disabled]="disableAdd"  >Add</button></div> 
+                <div class="col-sm-1"><button class="btn btn-primary" [disabled]="disableClear" (click)="ClearPurchase()" >Clear</button></div> 
+                <div class="col-sm-1"><button class="btn btn-primary" [disabled]="disableUpdate"  (click)="UpdatePurchase()" >Update</button></div> 
+                <div class="col-sm-1"><button class="btn btn-primary" [disabled]="disableDelete" >Del</button></div> 
             </div>  
         </div>
         <div class="table-responsive">
@@ -45,7 +50,7 @@
               <th>Cost</th>
               <th>Date</th>
             </tr>
-            <tr *ngFor="let aw of Purchases">
+            <tr *ngFor="let aw of pagedItems"  (click)="goToLink(aw)">
               <td>{{aw.Title}}</td>
               <td>{{aw.UnitCount}}</td>
               <td>{{aw.UnitCost!=null? aw.UnitCost:"n/a"}}</td>
@@ -55,10 +60,10 @@
             </tr>
             <tr >
               <td colspan="4" style="text-align:center">
-                  <button role="button" [disabled]="currentPage == 1" (click)="currentPage=currentPage-1; setPage();">
+                  <button role="button" [disabled]="currentPage == 0" (click)="currentPage=currentPage-1; setPage();">
                       Previous
                   </button>
-                  {{currentPage}}/{{numberOfPages}}
+                  {{currentPage+1}}/{{numberOfPages}}
                   <button role="button" [disabled]="currentPage >= numberOfPages" (click)="currentPage=currentPage+1; setPage();">
                       Next
                 </button>
