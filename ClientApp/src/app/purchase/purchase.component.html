@@ -53,9 +53,9 @@
             <tr *ngFor="let aw of pagedItems"  (click)="goToLink(aw)"  (mouseover)="highlightRow(aw)" [ngClass] = "{'highlight' : aw.PurchaseID == selectedPurchaseID}">
               <td>{{aw.Title}}</td>
               <td>{{aw.UnitCount}}</td>
-              <td>{{aw.UnitCost!=null? aw.UnitCost:"n/a"}}</td>
+              <td>{{aw.UnitCostFormatted()}}</td>
               <td>{{aw.Count}}</td>
-              <td>{{aw.Cost}}</td>
+              <td>{{aw.CostFormatted()}}</td>
               <td>{{aw.PurchaseDate!=null? (aw.PurchaseDate  | date):"n/a"}}</td>
             </tr>
             <tr >

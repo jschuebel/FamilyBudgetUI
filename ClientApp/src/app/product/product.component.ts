@@ -30,8 +30,17 @@ export class ProductComponent implements OnInit {
     let pageSize = this.pageSize;
     this._dataService.getProducts()
     .subscribe(resProd => {
-      this.Products = resProd.body;
+      //this.Products = resProd.body;
       let total : number =  + resProd.headers.get('X-Total-Count');
+
+      this.Products = <Product[]> _.reduce(resProd.body, function(memo, prod, idx) {
+        const mprod = new Product(prod);
+        memo.push(mprod);
+        return memo;
+      }, []);
+
+
+      
       console.log("Products",this.Products);
       if (total>0 && total < this.pageSize)
       this.numberOfPages = 1;

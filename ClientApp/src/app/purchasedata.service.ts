@@ -24,7 +24,7 @@ export class PurchasedataService {
   getProducts()  {
     //force result to string
       console.log("url", `${this.baseUrl}api/product/`);
-      return this._http.get<any>("http://localhost:9000/api/product", {observe: 'response'});
+      return this._http.get<Product[]>("http://localhost:9000/api/product", {observe: 'response'});
   }
 
   getPurchases()   {

@@ -29,6 +29,8 @@ export class Purchase implements IPurchase {
     UnitCost:number;
     Title: string;
 
+    formatter = new Intl.NumberFormat('en-US', { style:'currency', currency: 'USD'});
+
     constructor();
     constructor(obj: Purchase); 
     constructor(obj?: any) {    
@@ -40,6 +42,15 @@ export class Purchase implements IPurchase {
         
     }   
 
+    CostFormatted() {
+        return this.formatter.format(this.Cost);
+      }
+
+      UnitCostFormatted() {
+        if (this.UnitCost==null) return "N/A";
+        return this.formatter.format(this.UnitCost);
+      }
+    
     BuildPurchase(prod:Product) {
         this.UnitCount=prod.Count;
         this.UnitCost=prod.Cost;
