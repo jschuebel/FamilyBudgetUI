@@ -11,6 +11,7 @@ import {map} from 'rxjs/operators';
 
 import { Product } from './Model/Product';
 import { IPurchase, Purchase } from './Model/Purchase';
+import { Category } from './Model/Category';
 
 @Injectable({
   providedIn: 'root'
@@ -32,4 +33,9 @@ export class PurchasedataService {
       return this._http.get<Purchase[]>("http://localhost:9000/api/purchase", {observe: 'response'}) ;
   }
 
+  getCategories()   {
+    //force result to string
+      console.log("url", `${this.baseUrl}api/category/`);
+      return this._http.get<Category[]>("http://localhost:9000/api/category", {observe: 'response'}) ;
+  }
 }

@@ -8,7 +8,9 @@ import { AppComponent } from './app.component';
 import { NavMenuComponent } from './nav-menu/nav-menu.component';
 import { HomeComponent } from './home/home.component';
 import { PurchaseComponent } from './purchase/purchase.component';
-import { FetchDataComponent } from './fetch-data/fetch-data.component';
+import { ProductComponent } from './product/product.component';
+import { CategoryComponent } from './Category/Category.component';
+
 
 @NgModule({
   declarations: [
@@ -16,7 +18,8 @@ import { FetchDataComponent } from './fetch-data/fetch-data.component';
     NavMenuComponent,
     HomeComponent,
     PurchaseComponent,
-    FetchDataComponent
+    ProductComponent,
+    CategoryComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -25,7 +28,8 @@ import { FetchDataComponent } from './fetch-data/fetch-data.component';
     RouterModule.forRoot([
       { path: '', component: HomeComponent, pathMatch: 'full' },
       { path: 'purchase', component: PurchaseComponent },
-      { path: 'fetch-data', component: FetchDataComponent },
+      { path: 'product', component: ProductComponent },
+      { path: 'category', component: CategoryComponent },
     ])
   ],
   providers: [],

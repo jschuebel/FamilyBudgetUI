@@ -12,7 +12,7 @@
             <div class="row"> 
                 <div class="col-sm-2"><label class="label" >Product</label></div> 
                 <div class="col-sm-4">
-                  <select class="text-monospace form-control" id="selHomeProducts" name="selHomeProducts" [(ngModel)]="selectedProduct" >
+                  <select class="text-monospace form-control"  [(ngModel)]="selectedProduct" >
                       <option *ngFor="let c of Products" [ngValue]="c"> {{c.DisplayText}} </option>
                   </select>                            
           
@@ -50,7 +50,7 @@
               <th>Cost</th>
               <th>Date</th>
             </tr>
-            <tr *ngFor="let aw of pagedItems"  (click)="goToLink(aw)">
+            <tr *ngFor="let aw of pagedItems"  (click)="goToLink(aw)"  (mouseover)="highlightRow(aw)" [ngClass] = "{'highlight' : aw.PurchaseID == selectedPurchaseID}">
               <td>{{aw.Title}}</td>
               <td>{{aw.UnitCount}}</td>
               <td>{{aw.UnitCost!=null? aw.UnitCost:"n/a"}}</td>

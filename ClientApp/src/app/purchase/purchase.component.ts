@@ -23,6 +23,7 @@ export class PurchaseComponent implements OnInit {
   disableClear = false;
   disableUpdate = true;
   disableDelete = true;
+  selectedPurchaseID:string;
   
   constructor(private _dataService:PurchasedataService) { }
 
@@ -110,6 +111,11 @@ export class PurchaseComponent implements OnInit {
     });
 
   }
+
+  public highlightRow(purch) {
+    this.selectedPurchaseID = purch.PurchaseID;
+  }
+  
 
   UpdatePurchase() {
     console.log("UpdatePurchase purchase", this.selectedPurchase);
