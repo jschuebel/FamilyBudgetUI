@@ -5,6 +5,7 @@ export class Product {
     Title: string;
     DisplayText: string;
     formatter = new Intl.NumberFormat('en-US', { style:'currency', currency: 'USD'});
+    wasChecked:boolean;
 
     constructor();
     constructor(obj: Product); 

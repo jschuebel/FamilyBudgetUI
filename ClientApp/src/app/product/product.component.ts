@@ -1,8 +1,14 @@
 import { Component, OnInit } from '@angular/core';
+import { forkJoin } from 'rxjs';
+import { map } from 'rxjs/operators';
+
+
 import  * as _ from 'lodash';
 
 import { PurchasedataService } from '../Purchasedata.service';
 import { Product } from '../Model/Product';
+import { Category } from '../Model/Category';
+import { CategoryXref } from '../Model/CategoryXref';
 
 @Component({
   selector: 'app-product',
@@ -13,6 +19,8 @@ export class ProductComponent implements OnInit {
   Products : Product[] = [];
   pagedItems: any[];
   selectedProduct: Product = new Product();
+  Categorys: Category[];
+  CategoryXrefs: CategoryXref[];
   currentPage = 0;
   pageSize = 10;
   numberOfPages=0;
@@ -25,35 +33,80 @@ export class ProductComponent implements OnInit {
   constructor(private _dataService:PurchasedataService) { }
 
   ngOnInit() {
-    this.selectedProduct.Cost=0;
+    this.selectedProduct.Cost=null;
     let self = this;
     let pageSize = this.pageSize;
-    this._dataService.getProducts()
-    .subscribe(resProd => {
-      //this.Products = resProd.body;
-      let total : number =  + resProd.headers.get('X-Total-Count');
+    forkJoin(
+      this._dataService.getCategories(),
+      this._dataService.getCategoryXref(),
+      this._dataService.getProducts()
+      // getMultiValueObservable(), forkJoin on works for observables that complete
+    ).subscribe(([cat, catX, prod]) => {
+      this.Categorys=cat.body;
+      this.CategoryXrefs=catX;
+  
+      console.log('this.Categorys',this.Categorys);
+      console.log('this.CategoryXrefs',this.CategoryXrefs);
 
-      this.Products = <Product[]> _.reduce(resProd.body, function(memo, prod, idx) {
-        const mprod = new Product(prod);
-        memo.push(mprod);
-        return memo;
-      }, []);
+        let total : number =  + prod.headers.get('X-Total-Count');
+        console.log('this.Products total',total);
+
+        this.Products = <Product[]> _.reduce(prod.body, function(memo, prod, idx) {
+          const mprod = new Product(prod);
+          memo.push(mprod);
+          return memo;
+        }, []);
+        
+        console.log("Products",this.Products);
+        if (total>0 && total < this.pageSize)
+          this.numberOfPages = 1;
+        else
+          this.numberOfPages = Math.round(total / this.pageSize);
+        let modr = (total % this.pageSize) ;
+        if (modr>0 && modr<6) this.numberOfPages++;
+        console.log("numberOfPages=",this.numberOfPages, "total returned",total);
+        this.setPage();
+      },
+      err => {
+        console.log("Error from multi subscribe", err)
+      });
+
+    /*
+    this._dataService.getCategoryXref()
+    .subscribe(resCatX => {
+        this.CategoryXrefs = resCatX;
+        console.log("CategoryXrefs",this.CategoryXrefs);
 
 
-      
-      console.log("Products",this.Products);
-      if (total>0 && total < this.pageSize)
-      this.numberOfPages = 1;
-    else
-      this.numberOfPages = Math.round(total / this.pageSize);
-      let modr = (total % this.pageSize) ;
-      if (modr>0 && modr<6) this.numberOfPages++;
-      console.log("numberOfPages=",this.numberOfPages, "total returned",total);
-      this.setPage();
+        this._dataService.getProducts()
+        .subscribe(resProd => {
+          //this.Products = resProd.body;
+          let total : number =  + resProd.headers.get('X-Total-Count');
 
-
+          this.Products = <Product[]> _.reduce(resProd.body, function(memo, prod, idx) {
+            const mprod = new Product(prod);
+            memo.push(mprod);
+            return memo;
+          }, []);
+          
+          console.log("Products",this.Products);
+          if (total>0 && total < this.pageSize)
+          this.numberOfPages = 1;
+        else
+          this.numberOfPages = Math.round(total / this.pageSize);
+          let modr = (total % this.pageSize) ;
+          if (modr>0 && modr<6) this.numberOfPages++;
+          console.log("numberOfPages=",this.numberOfPages, "total returned",total);
+          this.setPage();
+        },
+        err => {
+          console.log("Error from getProducts", err)
+        });
+    },
+    err => {
+      console.log("Error from getCategoryXref", err)
     });
-
+*/    
   }
 
   public highlightRow(purch) {
@@ -76,9 +129,23 @@ export class ProductComponent implements OnInit {
   }
 
   goToLink(prod) {
+    let self= this;
     console.log("goToLink prod", prod);
 
     this.selectedProduct = prod;
+
+
+     _.reduce(this.Categorys, function(memo, cat1, idx) {
+      //console.log('cat1',cat1);
+        let catX1 =  self.CategoryXrefs.find(function(catX2) {
+          return catX2.CategoryID==cat1.CategoryID && catX2.ProductID==prod.ProductID;
+        });
+        //console.log('catX2',catX1,'cat', cat1);
+        if (catX1==null) 
+          cat1.wasChecked=false;
+        else
+          cat1.wasChecked=true;
+    }, []);
 
     this.disableAdd = true;
     this.disableUpdate = false;
@@ -101,6 +168,11 @@ export class ProductComponent implements OnInit {
     this.disableUpdate = true;
     this.disableDelete = true;
   
+    _.reduce(this.Categorys, function(memo, cat1, idx) {
+          cat1.wasChecked=false;
+    }, []);
+
+
   }
 
 }

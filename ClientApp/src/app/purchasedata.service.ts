@@ -12,6 +12,7 @@ import {map} from 'rxjs/operators';
 import { Product } from './Model/Product';
 import { IPurchase, Purchase } from './Model/Purchase';
 import { Category } from './Model/Category';
+import { CategoryXref } from './Model/CategoryXref';
 
 @Injectable({
   providedIn: 'root'
@@ -38,4 +39,11 @@ export class PurchasedataService {
       console.log("url", `${this.baseUrl}api/category/`);
       return this._http.get<Category[]>("http://localhost:9000/api/category", {observe: 'response'}) ;
   }
+
+  getCategoryXref()   {
+    //force result to string
+      console.log("url", `${this.baseUrl}api/categoryxref/`);
+      return this._http.get<CategoryXref[]>("http://localhost:9000/api/CategoryXref") ;
+  }
+
 }
