@@ -17,60 +17,31 @@ import { CategoryXref } from '../Model/CategoryXref';
 })
 export class ProductComponent implements OnInit {
   Products : Product[] = [];
-  pagedItems: any[];
+  //pagedItems: any[];
   selectedProduct: Product = new Product();
   Categorys: Category[];
   CategoryXrefs: CategoryXref[];
+  
   currentPage = 0;
   pageSize = 10;
   numberOfPages=0;
+  sortColumn: string = 'Title';
+  sortDirection : string = "asc";
+  //filterField:string = 'Date';
+  //filterValue:string = '';
+  
   disableAdd = false;
   disableClear = false;
   disableUpdate = true;
   disableDelete = true;
   selectedProductID:string;
   
+  
   constructor(private _dataService:PurchasedataService) { }
 
   ngOnInit() {
     this.selectedProduct.Cost=null;
-    let self = this;
-    let pageSize = this.pageSize;
-    forkJoin(
-      this._dataService.getCategories(),
-      this._dataService.getCategoryXref(),
-      this._dataService.getProducts()
-      // getMultiValueObservable(), forkJoin on works for observables that complete
-    ).subscribe(([cat, catX, prod]) => {
-      this.Categorys=cat.body;
-      this.CategoryXrefs=catX;
-  
-      console.log('this.Categorys',this.Categorys);
-      console.log('this.CategoryXrefs',this.CategoryXrefs);
-
-        let total : number =  + prod.headers.get('X-Total-Count');
-        console.log('this.Products total',total);
-
-        this.Products = <Product[]> _.reduce(prod.body, function(memo, prod, idx) {
-          const mprod = new Product(prod);
-          memo.push(mprod);
-          return memo;
-        }, []);
-        
-        console.log("Products",this.Products);
-        if (total>0 && total < this.pageSize)
-          this.numberOfPages = 1;
-        else
-          this.numberOfPages = Math.round(total / this.pageSize);
-        let modr = (total % this.pageSize) ;
-        if (modr>0 && modr<6) this.numberOfPages++;
-        console.log("numberOfPages=",this.numberOfPages, "total returned",total);
-        this.setPage();
-      },
-      err => {
-        console.log("Error from multi subscribe", err)
-      });
-
+    this.getData();
     /*
     this._dataService.getCategoryXref()
     .subscribe(resCatX => {
@@ -112,6 +83,56 @@ export class ProductComponent implements OnInit {
   public highlightRow(purch) {
     this.selectedProductID = purch.ProductID;
   }
+
+  getData(){
+    let filterQuery='';
+    let filterOp = 'contains'; //'gte';
+    let filterIndex=0;
+
+    let self = this;
+    let pageSize = this.pageSize;
+
+
+    //filterQuery+=`&filter[logic]=and&filter[filters][${filterIndex}][field]=UserId&filter[filters][${filterIndex}][operator]=eq&filter[filters][${filterIndex}][value]=${this.selectedPerson.id}`;
+    //var filterParams = `page=${this.currentPage}&pageSize=${this.pageSize}&sort[0][field]=${this.sortColumn}&sort[0][dir]=${this.sortDirection}${filterQuery}`;
+    
+    var filterParams = `page=${this.currentPage}&pageSize=${this.pageSize}&sort[0][field]=${this.sortColumn}&sort[0][dir]=${this.sortDirection}`;
+    forkJoin(
+      this._dataService.getCategories(null),
+      this._dataService.getCategoryXref(null),
+      this._dataService.getProducts(filterParams)
+      // getMultiValueObservable(), forkJoin on works for observables that complete
+    ).subscribe(([cat, catX, prod]) => {
+      this.Categorys=cat.body;
+      this.CategoryXrefs=catX.body;
+  
+      console.log('this.Categorys',this.Categorys);
+      console.log('this.CategoryXrefs',this.CategoryXrefs);
+
+        let total : number =  + prod.headers.get('X-Total-Count');
+        console.log('this.Products total',total);
+
+        this.Products = <Product[]> _.reduce(prod.body, function(memo, prod, idx) {
+          const mprod = new Product(prod);
+          memo.push(mprod);
+          return memo;
+        }, []);
+        
+        console.log("Products",this.Products);
+        if (total>0 && total < this.pageSize)
+          this.numberOfPages = 1;
+        else
+          this.numberOfPages = Math.round(total / this.pageSize);
+        let modr = (total % this.pageSize) ;
+        if (modr>0 && modr<6) this.numberOfPages++;
+        console.log("numberOfPages=",this.numberOfPages, "total returned",total);
+        //this.setPage();
+      },
+      err => {
+        console.log("Error from multi subscribe", err)
+      });
+
+  }
   
   setPage() {
     if (this.currentPage < 0) {
@@ -124,8 +145,9 @@ export class ProductComponent implements OnInit {
     }
 
     console.log("sePage len=",this.Products.length, "  currpage=", this.currentPage, "   pagesize=", this.pageSize, "    numberOfPages=", this.numberOfPages);
-    this.pagedItems = this.Products.slice(this.currentPage*this.pageSize, this.currentPage*this.pageSize + this.pageSize);
-    console.log("this.pagedItems=",this.pagedItems);
+    //this.pagedItems = this.Products.slice(this.currentPage*this.pageSize, this.currentPage*this.pageSize + this.pageSize);
+    //console.log("this.pagedItems=",this.pagedItems);
+    this.getData();
   }
 
   goToLink(prod) {

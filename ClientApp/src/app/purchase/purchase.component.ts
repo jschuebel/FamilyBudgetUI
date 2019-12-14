@@ -13,12 +13,17 @@ import { Purchase } from '../Model/Purchase';
 export class PurchaseComponent implements OnInit {
   Purchases : Purchase[] = [];
   selectedPurchase: Purchase = new Purchase();
-  pagedItems: any[];
+  //pagedItems: any[];
   Products : Product[] = [];
   selectedProduct: Product;
   currentPage = 0;
   pageSize = 10;
   numberOfPages=0;
+  sortColumn: string = 'Title';
+  sortDirection : string = "asc";
+  //filterField:string = 'Date';
+  //filterValue:string = '';
+
   disableAdd = false;
   disableClear = false;
   disableUpdate = true;
@@ -33,9 +38,23 @@ export class PurchaseComponent implements OnInit {
 
 
   ngOnInit() {
+    this.getData();
+  }
+
+  getData(){
+    let filterQuery='';
+    let filterOp = 'contains'; //'gte';
+    let filterIndex=0;
+
     let self = this;
     let pageSize = this.pageSize;
-    this._dataService.getProducts()
+
+
+    //filterQuery+=`&filter[logic]=and&filter[filters][${filterIndex}][field]=UserId&filter[filters][${filterIndex}][operator]=eq&filter[filters][${filterIndex}][value]=${this.selectedPerson.id}`;
+    //var filterParams = `page=${this.currentPage}&pageSize=${this.pageSize}&sort[0][field]=${this.sortColumn}&sort[0][dir]=${this.sortDirection}${filterQuery}`;
+    
+    var filterParams = `page=${this.currentPage}&pageSize=${this.pageSize}&sort[0][field]=${this.sortColumn}&sort[0][dir]=${this.sortDirection}`;
+    this._dataService.getProducts(null)
     .subscribe(resProd => {
 
       var p = new Product();
@@ -60,7 +79,7 @@ export class PurchaseComponent implements OnInit {
       console.log("Products=",this.Products);
       console.log('Products header rowtotal', resProd.headers.get('X-Total-Count'));
 
-      this._dataService.getPurchases()
+      this._dataService.getPurchases(filterParams)
       .subscribe((resPurch) => {
         console.log("resPurch", resPurch);
         //console.log("Current typeof resPurch", typeof(resPurch));
@@ -98,7 +117,7 @@ export class PurchaseComponent implements OnInit {
         let modr = (total % this.pageSize) ;
         if (modr>0 && modr<6) this.numberOfPages++;
         console.log("numberOfPages=",this.numberOfPages, "total returned",total);
-        this.setPage();
+        //this.setPage();
 
       },
       err => {
@@ -109,13 +128,27 @@ export class PurchaseComponent implements OnInit {
     err => {
       console.log("Error from getProducts", err)
     });
-
   }
 
   public highlightRow(purch) {
     this.selectedPurchaseID = purch.PurchaseID;
   }
-  
+
+  setPage() {
+    if (this.currentPage < 0) {
+      this.currentPage=0;
+      return;
+    }
+    if (this.currentPage > this.numberOfPages-1) {
+      this.currentPage=this.numberOfPages-1;
+      return;
+    }
+
+    console.log("sePage len=",this.Purchases.length, "  currpage=", this.currentPage, "   pagesize=", this.pageSize, "    numberOfPages=", this.numberOfPages);
+    //this.pagedItems = this.Purchases.slice(this.currentPage*this.pageSize, this.currentPage*this.pageSize + this.pageSize);
+    //console.log("this.pagedItems=",this.pagedItems);
+  }
+
 
   UpdatePurchase() {
     console.log("UpdatePurchase purchase", this.selectedPurchase);
@@ -158,19 +191,5 @@ export class PurchaseComponent implements OnInit {
     this.disableDelete = false;
   }
 
-  setPage() {
-    if (this.currentPage < 0) {
-      this.currentPage=0;
-      return;
-    }
-    if (this.currentPage > this.numberOfPages-1) {
-      this.currentPage=this.numberOfPages-1;
-      return;
-    }
-
-    console.log("sePage len=",this.Purchases.length, "  currpage=", this.currentPage, "   pagesize=", this.pageSize, "    numberOfPages=", this.numberOfPages);
-    this.pagedItems = this.Purchases.slice(this.currentPage*this.pageSize, this.currentPage*this.pageSize + this.pageSize);
-    console.log("this.pagedItems=",this.pagedItems);
-  }
 
 }

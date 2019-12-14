@@ -68,7 +68,7 @@
         <th>Count</th>
         <th>Cost</th>
         </tr>
-        <tr *ngFor="let aw of pagedItems"  (click)="goToLink(aw)"  (mouseover)="highlightRow(aw)" [ngClass] = "{'highlight' : aw.ProductID == selectedProductID}">
+        <tr *ngFor="let aw of Products"  (click)="goToLink(aw)"  (mouseover)="highlightRow(aw)" [ngClass] = "{'highlight' : aw.ProductID == selectedProductID}">
             <td>{{aw.ProductID}}</td>
             <td>{{aw.Title}}</td>
             <td>{{aw.Count}}</td>

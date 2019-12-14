@@ -38,7 +38,7 @@ export class Purchase implements IPurchase {
         this.ProductID = obj && obj.ProductID || 0
         this.Count = obj && obj.Count || 0
         this.PurchaseDate = obj && obj.PurchaseDate || 0
-        this.CostOverride = obj && obj.CostOverride || 0
+        this.CostOverride = obj && obj.CostOverride || null
         
     }   
 

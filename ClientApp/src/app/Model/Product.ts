@@ -13,7 +13,7 @@ export class Product {
         this.ProductID = obj && obj.ProductID || 0
         this.Count = obj && obj.Count || 0
         this.Title = obj && obj.Title || ''
-        this.Cost = obj && obj.Cost || 0
+        this.Cost = obj && obj.Cost || null
         
     }   
 
