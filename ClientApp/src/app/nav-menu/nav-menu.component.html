@@ -30,6 +30,12 @@
               >Category</a
             >
           </li>
+          <li class="nav-item" [routerLinkActive]="['link-active']">
+            <a (click)="setActive('report')" class="{{getActive('report')}}"
+            class="nav-link" [routerLink]="['/report']"
+              >Report</a
+            >
+          </li>
           <li class="nav-item"><a (click)="openLogin($event);" class="{{getActive('login')}}" href='#'>Login</a></li>
           <li class="nav-item"><a (click)="Logout($event);" class="{{getActive('logout')}}" href='#'>LogOut</a></li>
           <li class="nav-item"><a (click)="checkAuth($event);" class="{{getActive('test')}}" href='#'>Test</a></li>

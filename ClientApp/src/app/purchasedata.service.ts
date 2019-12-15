@@ -53,9 +53,9 @@ export class PurchasedataService {
     //force result to string
       console.log("url", `${this.baseUrl}api/categoryxref/`);
       if (filterParams!=null)
-        return this._http.get<Category[]>(`http://localhost:5002/api/categoryxref?${filterParams}`, {observe: 'response'});
+        return this._http.get<CategoryXref[]>(`http://localhost:5002/api/categoryxref?${filterParams}`, {observe: 'response'});
       else
-        return this._http.get<Category[]>("http://localhost:5002/api/categoryxref", {observe: 'response'}) ;
+        return this._http.get<CategoryXref[]>("http://localhost:5002/api/categoryxref", {observe: 'response'}) ;
       //return this._http.get<CategoryXref[]>("http://localhost:9000/api/CategoryXref") ;
   }
 

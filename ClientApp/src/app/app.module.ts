@@ -10,6 +10,7 @@ import { HomeComponent } from './home/home.component';
 import { PurchaseComponent } from './purchase/purchase.component';
 import { ProductComponent } from './product/product.component';
 import { CategoryComponent } from './Category/Category.component';
+import { ReportComponent } from './Report/Report.component';
 
 
 @NgModule({
@@ -19,7 +20,8 @@ import { CategoryComponent } from './Category/Category.component';
     HomeComponent,
     PurchaseComponent,
     ProductComponent,
-    CategoryComponent
+    CategoryComponent,
+    ReportComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -29,7 +31,7 @@ import { CategoryComponent } from './Category/Category.component';
       { path: '', component: HomeComponent, pathMatch: 'full' },
       { path: 'purchase', component: PurchaseComponent },
       { path: 'product', component: ProductComponent },
-      { path: 'category', component: CategoryComponent },
+      { path: 'report', component: ReportComponent },
     ])
   ],
   providers: [],

@@ -27,7 +27,7 @@ export class CategoryComponent implements OnInit {
   ngOnInit() {
     let self = this;
     let pageSize = this.pageSize;
-    this._dataService.getCategories()
+    this._dataService.getCategories(null)
     .subscribe(resProd => {
       this.Categories = resProd.body;
       let total : number =  + resProd.headers.get('X-Total-Count');

@@ -1,0 +1,29 @@
+<div class="container-fluid"> 
+    <div class="row" > 
+      <div class="col-sm-4">
+          <span style="font-size: 22px;">Reports</span> 
+          <span style="font-size: 16px;">- Manage Reports</span> 
+      </div>
+    </div>
+  </div>
+  <div style="background-color: lightgreen;"  class="container-fluid"> 
+    <div class="row"> 
+      <div  class="col-sm-3 offset-sm-1"><SELECT class="form-control" id='selReportCat' ></SELECT></div> 
+    </div>
+    <div class="row"> 
+      <div class="col-sm-2 offset-sm-1">
+        <label class='radio-inline'><input type='radio' name='rpttype' checked id='rdoBar' />Bar Graph</label>
+      </div> 
+      <div class="col-sm-1">
+        <label class='radio-inline'><input type='radio' name='rpttype' id='rdoLine' />Line Graph</label>
+      </div> 
+  </div>
+<div class="row"><div class="col-sm-1">&nbsp;</div></div>
+    <div class="row"> 
+          <div  class="col-sm-3">
+            <canvas  #purchasesCanvas width="650" height="450" ></canvas>
+          </div> 
+    </div>
+</div>
+
+
