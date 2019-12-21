@@ -18,27 +18,57 @@ import { CategoryXref } from './Model/CategoryXref';
   providedIn: 'root'
 })
 export class PurchasedataService {
-
+  dataUrl = "http://localhost:5002/api/";
   constructor(private _http: HttpClient, @Inject('BASE_URL') private baseUrl: string) { }
 
+  /*******************************************   Products ******************************************* */
   getProducts(filterParams)  {
     console.log("getProducts filterParams=", filterParams);
-    console.log("url", `${this.baseUrl}api/product/`);
+    console.log("baseurl", `${this.baseUrl}api/product/`);
+    console.log("url", `${this.dataUrl}product`);
+    
       //return this._http.get<Product[]>("http://localhost:5002/api/product?page=1&pageSize=8", {observe: 'response'});
       if (filterParams!=null)
-        return this._http.get<Product[]>(`http://localhost:5002/api/product?${filterParams}`, {observe: 'response'});
+        return this._http.get<Product[]>(`${this.dataUrl}product?${filterParams}`, {observe: 'response'});
       else
-        return this._http.get<Product[]>("http://localhost:5002/api/product", {observe: 'response'});
+        return this._http.get<Product[]>(`${this.dataUrl}product`, {observe: 'response'});
       //return this._http.get<Product[]>("http://localhost:9000/api/product", {observe: 'response'});
   }
 
+  saveProduct(p : Product ) {
+    var hldp = JSON.parse(JSON.stringify(p));
+    console.log("baseurl", `${this.baseUrl}api/product/`);
+    console.log("url", `${this.dataUrl}product`);
+    if (p.ProductID===0)
+      return this._http.post<Product>(`${this.dataUrl}product`,p);
+    else
+      return this._http.put<Product>(`${this.dataUrl}product`,p);
+    //return this._http.put<Product>(`${this.dataUrl}product/${p.ProductID}`,p);
+    //    return this._http.put<Person>(`${this.baseUrl}api/person/${person.id}`,person);
+      //params: new HttpParams().set('id',`${person.id}`)
+      //.map(result=>this.result=result.json().data);
+  }
+
+  deleteProduct(p : Product ) {
+    var hldp = JSON.parse(JSON.stringify(p));
+    console.log("baseurl", `${this.baseUrl}api/product/`);
+    console.log("url", `${this.dataUrl}product`);
+    return this._http.delete(`${this.dataUrl}product/${p.ProductID}`);
+  }
+
+  /*******************************************   Purchases ******************************************* */
   getPurchases(filterParams)   {
     //force result to string
       console.log("url", `${this.baseUrl}api/purchase/`);
-      return this._http.get<Product[]>("http://localhost:5002/api/purchase", {observe: 'response'});
+      console.log("getProducts filterParams=", filterParams);
+      if (filterParams!=null)
+        return this._http.get<Product[]>(`http://localhost:5002/api/purchase?${filterParams}`, {observe: 'response'});
+      else
+        return this._http.get<Product[]>("http://localhost:5002/api/purchase", {observe: 'response'});
       //return this._http.get<Purchase[]>("http://localhost:9000/api/purchase", {observe: 'response'}) ;
   }
 
+  /*******************************************   Categories ******************************************* */
   getCategories(filterParams)   {
     //force result to string
       console.log("url", `${this.baseUrl}api/category/`);

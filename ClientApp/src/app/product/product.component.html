@@ -7,6 +7,7 @@
     </div>
   </div>
 
+  <div class="text-danger" *ngIf="message">{{message}}</div>
   <div  style="background-color: lightgreen;"  class="container-fluid"> 
 
     <div class="row">
@@ -24,15 +25,15 @@
                     <div class="col-sm-3">Cost</div> 
                     <div class="col-sm-4"><input type="number" min="0.01" step="1.00" class="form-control" [disabled]="selectedProduct.Cost==null" [(ngModel)]="selectedProduct.Cost" /></div> 
                     <div class="col-sm-4">
-                      <label class='checkbox-inline'><input type='checkbox' [checked]="selectedProduct.Cost==null" />Has Override</label>
+                      <label class='checkbox-inline'><input type='checkbox' (change)="overrideChange()" [checked]="selectedProduct.Cost==null" />Has Override</label>
                     </div> 
                 </div>
                 <div class="row"><div class="col-sm-1">&nbsp;</div></div>
                 <div class="row"> 
-                    <div class="col-sm-3"><button class="btn btn-primary" [disabled]="disableAdd"  >Add</button></div> 
-                    <div class="col-sm-3"><button class="btn btn-primary" [disabled]="disableClear" (click)="ClearPurchase()" >Clear</button></div> 
-                    <div class="col-sm-3"><button class="btn btn-primary" [disabled]="disableUpdate"  (click)="UpdatePurchase()" >Update</button></div> 
-                    <div class="col-sm-3"><button class="btn btn-primary" [disabled]="disableDelete" >Del</button></div> 
+                    <div class="col-sm-3"><button class="btn btn-primary" [disabled]="disableAdd"  (click)="SaveProduct()" >Add</button></div> 
+                    <div class="col-sm-3"><button class="btn btn-primary" [disabled]="disableClear" (click)="ClearProduct()" >Clear</button></div> 
+                    <div class="col-sm-3"><button class="btn btn-primary" [disabled]="disableUpdate" (click)="SaveProduct()" >Update</button></div> 
+                    <div class="col-sm-3"><button class="btn btn-primary" [disabled]="disableDelete" (click)="DeleteProduct()">Del</button></div> 
                  </div>
         </div>
         <div style="border-color: black;border-style: solid;" class="col-sm-8">

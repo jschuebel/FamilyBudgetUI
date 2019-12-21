@@ -9,7 +9,7 @@ export class ReportComponent implements OnInit {
   private canvas: HTMLCanvasElement;
   private context: CanvasRenderingContext2D;  
   // get the element with the #chessCanvas on it
-  @ViewChild("purchasesCanvas") purchasesCanvas: ElementRef; 
+  @ViewChild("purchasesCanvas", {static: false}) purchasesCanvas: ElementRef; 
 
   constructor() { }
 
@@ -21,28 +21,18 @@ export class ReportComponent implements OnInit {
   ngAfterViewInit() { // wait for the view to init before using the element
     //this.drawGraph();
   
-      let options = {};
       let dataArr = [];
-      let rptRow = {};
-      rptRow.month=1;
-      rptRow.monthYear = "11/12/2019";
-      rptRow.Cost = 46;
+      let rptRow = {month : 1, monthYear : "11/12/2019", Cost : 46};
       dataArr.push(rptRow);
 
-      options.padding=20;
-      options.gridScale=25;
-      options.gridColor="#67b6c7";
-      options.data=dataArr;
+      let options = {padding:20, gridScale:25, gridColor:"#67b6c7", data:dataArr};
 
     this.drawBarchart(options);
   }
 
   drawGraph() {
     let dataArr = [];
-    let rptRow = {};
-    rptRow.month=1;
-    rptRow.monthYear = "11/12/2019";
-    rptRow.Cost = 46;
+    let rptRow = {month : 1, monthYear : "11/12/2019", Cost : 46};
     dataArr.push(rptRow);
 
 

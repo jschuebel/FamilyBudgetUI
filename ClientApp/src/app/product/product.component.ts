@@ -21,6 +21,7 @@ export class ProductComponent implements OnInit {
   selectedProduct: Product = new Product();
   Categorys: Category[];
   CategoryXrefs: CategoryXref[];
+  message: string;
   
   currentPage = 0;
   pageSize = 10;
@@ -175,17 +176,88 @@ export class ProductComponent implements OnInit {
   }
 
 
-  UpdateProduct() {
+  SaveProduct() {
     console.log("Update selectedProduct", this.selectedProduct);
+
+    if (this.selectedProduct.Title==""){
+      this.message="An Item Title is required";
+      return;
+    }
+
+    if (this.selectedProduct.Count===0){
+      this.message="An Item Count is required";
+        return;
+    }
+
+    if (this.selectedProduct.Cost!=null && this.selectedProduct.Cost===0){
+      this.message="An Item Cost is required";
+      return;
+    }
+
+    this._dataService.saveProduct(this.selectedProduct)
+    .subscribe(res => {
+      this.message="Saved!!!";
+      console.log("savePerson=",res);
+      this.getData();
+    },
+    error  => {
+      console.log("SavePerson response error", error);
+      this.message=error.statusText;
+    });
+
 
     this.disableAdd = false;
     this.disableUpdate = true;
     this.disableDelete = true;
+
+    this.selectedProduct = new Product();
+    this.selectedProduct.Cost=null;
+    alert("product saved");
   
   }
 
-  ClearPurchase() {
+  DeleteProduct() {
+    console.log("Delete selectedProduct", this.selectedProduct);
+
+    if (this.selectedProduct.ProductID==0){
+      this.message="A Product must be selected";
+      return;
+    }
+  
+    this._dataService.deleteProduct(this.selectedProduct)
+    .subscribe(res => {
+      this.message="Deleted!!!";
+      console.log("deletePerson=",res);
+      this.getData();
+    },
+    error  => {
+      console.log("DeletePerson response error", error);
+      this.message=error.statusText;
+    });
+
+
+    this.disableAdd = false;
+    this.disableUpdate = true;
+    this.disableDelete = true;
+
+    this.selectedProduct = new Product();
+    this.selectedProduct.Cost=null;
+   
+  }
+  // UpdateProduct() {
+  //   console.log("Update selectedProduct", this.selectedProduct);
+
+  //   this.disableAdd = false;
+  //   this.disableUpdate = true;
+  //   this.disableDelete = true;
+  
+  // }
+
+  ClearProduct() {
+    this.message="";
     this.selectedProduct=new Product();
+    this.selectedProduct.Cost=null;
+
     this.disableAdd = false;
     this.disableUpdate = true;
     this.disableDelete = true;
@@ -194,7 +266,10 @@ export class ProductComponent implements OnInit {
           cat1.wasChecked=false;
     }, []);
 
-
   }
 
+  overrideChange() {
+    console.log("Update selectedProduct", this.selectedProduct);
+    this.selectedProduct.Cost=0;
+  }
 }

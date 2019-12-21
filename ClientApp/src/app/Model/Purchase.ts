@@ -43,6 +43,7 @@ export class Purchase implements IPurchase {
     }   
 
     CostFormatted() {
+        if (this.Cost!=null && this.Cost===0) return "N/A";
         return this.formatter.format(this.Cost);
       }
 
@@ -50,12 +51,12 @@ export class Purchase implements IPurchase {
         if (this.UnitCost==null) return "N/A";
         return this.formatter.format(this.UnitCost);
       }
-    
+
     BuildPurchase(prod:Product) {
         this.UnitCount=prod.Count;
         this.UnitCost=prod.Cost;
         this.Title=prod.Title;
-        if (this.CostOverride!=0)
+        if (this.CostOverride!=null && this.CostOverride>0)
             this.Cost = this.Count * this.CostOverride;
         else
             this.Cost = this.Count * prod.Cost;

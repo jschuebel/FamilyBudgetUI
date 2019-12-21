@@ -19,8 +19,8 @@ export class PurchaseComponent implements OnInit {
   currentPage = 0;
   pageSize = 10;
   numberOfPages=0;
-  sortColumn: string = 'Title';
-  sortDirection : string = "asc";
+  sortColumn: string = 'PurchaseDate';
+  sortDirection : string = "desc";
   //filterField:string = 'Date';
   //filterValue:string = '';
 
@@ -65,12 +65,13 @@ export class PurchaseComponent implements OnInit {
 
       this.Products = resProd.body;
 
-      this.Purchases = <Purchase[]> _.reduce(resProd.body, function(memo, prod, idx) {
-        let titl = self.padright(prod.Title, '....................');
-        let cnt = self.padright(prod.Count, '.......');
-        if (prod.ProductID!=-1) {
-          prod.DisplayText = `${titl}${cnt}${prod.Cost==null?'OVRIDE':prod.Cost}`
-          memo.push(prod);
+      this.Purchases = <Purchase[]> _.reduce(resProd.body, function(memo, pr, idx) {
+        let titl = self.padright(pr.Title, '....................');
+        let cnt = self.padright(pr.Count, '.......');
+        const mpr = new Purchase(pr);
+        if (mpr.ProductID!=-1) {
+         // mpr.DisplayText = `${titl}${cnt}${mpr.Cost==null?'OVRIDE':mpr.Cost}`
+          memo.push(mpr);
         }
         return memo;
       }, []);
@@ -147,6 +148,7 @@ export class PurchaseComponent implements OnInit {
     console.log("sePage len=",this.Purchases.length, "  currpage=", this.currentPage, "   pagesize=", this.pageSize, "    numberOfPages=", this.numberOfPages);
     //this.pagedItems = this.Purchases.slice(this.currentPage*this.pageSize, this.currentPage*this.pageSize + this.pageSize);
     //console.log("this.pagedItems=",this.pagedItems);
+    this.getData();
   }
 
 

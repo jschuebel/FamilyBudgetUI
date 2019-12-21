@@ -1,5 +1,5 @@
 export class Product {
-    ProductID:number;
+    ProductID:number = -1;
     Count:number;
     Cost:number;
     Title: string;
