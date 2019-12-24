@@ -8,14 +8,20 @@
   </div>
   <div style="background-color: lightgreen;"  class="container-fluid"> 
     <div class="row"> 
-      <div  class="col-sm-3 offset-sm-1"><SELECT class="form-control" id='selReportCat' ></SELECT></div> 
+      <div  class="col-sm-3 offset-sm-1">
+        <select class="form-control"  (change)="CategoryChange()"  [(ngModel)]="selectedCategory" >
+          <option *ngFor="let c of Categories" [ngValue]="c"> {{c.Title}} </option>
+      </select>                            
+
+      
+      </div> 
     </div>
     <div class="row"> 
       <div class="col-sm-2 offset-sm-1">
-        <label class='radio-inline'><input type='radio' name='rpttype' checked id='rdoBar' />Bar Graph</label>
+        <label class='radio-inline'><input type='radio' name='rpttype' (change)="ReportTypeChange()" [checked]="selectedReportBar" />Bar Graph</label>
       </div> 
-      <div class="col-sm-1">
-        <label class='radio-inline'><input type='radio' name='rpttype' id='rdoLine' />Line Graph</label>
+      <div class="col-sm-2">
+        <label class='radio-inline'><input type='radio' name='rpttype' (change)="ReportTypeChange()" [checked]="selectedReportLine" />Line Graph</label>
       </div> 
   </div>
 <div class="row"><div class="col-sm-1">&nbsp;</div></div>

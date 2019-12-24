@@ -30,6 +30,7 @@ export class ProductComponent implements OnInit {
   sortDirection : string = "asc";
   //filterField:string = 'Date';
   //filterValue:string = '';
+  hasOverride:boolean=false;
   
   disableAdd = false;
   disableClear = false;
@@ -42,6 +43,7 @@ export class ProductComponent implements OnInit {
 
   ngOnInit() {
     this.selectedProduct.Cost=null;
+    this.hasOverride=true;
     this.getData();
     /*
     this._dataService.getCategoryXref()
@@ -157,6 +159,12 @@ export class ProductComponent implements OnInit {
 
     this.selectedProduct = prod;
 
+    
+    if (this.selectedProduct.Cost==null)
+      this.hasOverride=true;
+    else
+      this.hasOverride=false;
+      
 
      _.reduce(this.Categorys, function(memo, cat1, idx) {
       //console.log('cat1',cat1);
@@ -194,14 +202,48 @@ export class ProductComponent implements OnInit {
       return;
     }
 
+    //**********First save xrefs
+    var checkedCats = <Category[]> _.reduce(this.Categorys, function(memo, cat, idx) {
+      //console.log("saveProduct cat=",cat);
+      if (cat.wasChecked) {
+        memo.push(cat);
+      }
+      return memo;
+    }, []);
+    
+    console.log("SaveProduct checkedCats",checkedCats);
+    if (checkedCats!=null && checkedCats.length>0) {
+      this._dataService.saveCategoryXref(this.selectedProduct.ProductID,  checkedCats)
+      .subscribe(res => {
+        console.log("saveProduct saveCategoryXref=",res);
+        this.getData();
+      },
+      error  => {
+        console.log("SaveProduct response error", error);
+        this.message=error.error.CategoryXrefPut;
+      });
+    }
+//*********** testing
+    this.disableAdd = false;
+    this.disableUpdate = true;
+    this.disableDelete = true;
+
+    this.selectedProduct = new Product();
+    this.selectedProduct.Cost=null;
+    this.hasOverride=true;
+    return;
+//*********** testing
+
+
+    //**********Next save product
     this._dataService.saveProduct(this.selectedProduct)
     .subscribe(res => {
       this.message="Saved!!!";
-      console.log("savePerson=",res);
+      console.log("saveProduct=",res);
       this.getData();
     },
     error  => {
-      console.log("SavePerson response error", error);
+      console.log("SaveProduct response error", error);
       this.message=error.statusText;
     });
 
@@ -212,7 +254,7 @@ export class ProductComponent implements OnInit {
 
     this.selectedProduct = new Product();
     this.selectedProduct.Cost=null;
-    alert("product saved");
+    this.hasOverride=true;
   
   }
 
@@ -227,11 +269,11 @@ export class ProductComponent implements OnInit {
     this._dataService.deleteProduct(this.selectedProduct)
     .subscribe(res => {
       this.message="Deleted!!!";
-      console.log("deletePerson=",res);
+      console.log("deleteProct=",res);
       this.getData();
     },
     error  => {
-      console.log("DeletePerson response error", error);
+      console.log("DeleteProduct response error", error);
       this.message=error.statusText;
     });
 
@@ -242,16 +284,9 @@ export class ProductComponent implements OnInit {
 
     this.selectedProduct = new Product();
     this.selectedProduct.Cost=null;
+    this.hasOverride=true;
    
   }
-  // UpdateProduct() {
-  //   console.log("Update selectedProduct", this.selectedProduct);
-
-  //   this.disableAdd = false;
-  //   this.disableUpdate = true;
-  //   this.disableDelete = true;
-  
-  // }
 
   ClearProduct() {
     this.message="";
@@ -270,6 +305,10 @@ export class ProductComponent implements OnInit {
 
   overrideChange() {
     console.log("Update selectedProduct", this.selectedProduct);
-    this.selectedProduct.Cost=0;
+    if (this.hasOverride)
+      this.selectedProduct.Cost=null;
+      else
+      this.selectedProduct.Cost=0;
+      //[checked]="hasOverride"
   }
 }

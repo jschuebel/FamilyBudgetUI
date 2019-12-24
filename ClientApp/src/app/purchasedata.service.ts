@@ -68,25 +68,89 @@ export class PurchasedataService {
       //return this._http.get<Purchase[]>("http://localhost:9000/api/purchase", {observe: 'response'}) ;
   }
 
+  savePurchase(p : Purchase ) {
+    var hldp = JSON.parse(JSON.stringify(p));
+    console.log("baseurl", `${this.baseUrl}api/purchase/`);
+    console.log("url", `${this.dataUrl}purchase`);
+    if (p.ProductID===0)
+      return this._http.post<Purchase>(`${this.dataUrl}purchase`,p);
+    else
+      return this._http.put<Purchase>(`${this.dataUrl}purchase`,p);
+    //return this._http.put<Product>(`${this.dataUrl}product/${p.ProductID}`,p);
+    //    return this._http.put<Person>(`${this.baseUrl}api/person/${person.id}`,person);
+      //params: new HttpParams().set('id',`${person.id}`)
+      //.map(result=>this.result=result.json().data);
+  }
+
+  deletePurchase(p : Purchase ) {
+    var hldp = JSON.parse(JSON.stringify(p));
+    console.log("baseurl", `${this.baseUrl}api/purchase/`);
+    console.log("url", `${this.dataUrl}purchase`);
+    return this._http.delete(`${this.dataUrl}purchase/${p.PurchaseID}`);
+  }
+
   /*******************************************   Categories ******************************************* */
   getCategories(filterParams)   {
     //force result to string
       console.log("url", `${this.baseUrl}api/category/`);
       if (filterParams!=null)
-        return this._http.get<Category[]>(`http://localhost:5002/api/category?${filterParams}`, {observe: 'response'});
+        return this._http.get<Category[]>(`${this.dataUrl}category?${filterParams}`, {observe: 'response'});
       else
-        return this._http.get<Category[]>("http://localhost:5002/api/category", {observe: 'response'}) ;
+        return this._http.get<Category[]>(`${this.dataUrl}category`, {observe: 'response'}) ;
       //return this._http.get<Category[]>("http://localhost:9000/api/category", {observe: 'response'}) ;
     }
+
+    saveCategory(p : Category ) {
+      var hldp = JSON.parse(JSON.stringify(p));
+      console.log("baseurl", `${this.baseUrl}api/category/`);
+      console.log("url", `${this.dataUrl}category`);
+      if (p.CategoryID===0)
+        return this._http.post<Category>(`${this.dataUrl}category`,p);
+      else
+        return this._http.put<Category>(`${this.dataUrl}category`,p);
+      //return this._http.put<Product>(`${this.dataUrl}product/${p.ProductID}`,p);
+      //    return this._http.put<Person>(`${this.baseUrl}api/person/${person.id}`,person);
+        //params: new HttpParams().set('id',`${person.id}`)
+        //.map(result=>this.result=result.json().data);
+    }
+  
+    deleteCategory(p : Category ) {
+      var hldp = JSON.parse(JSON.stringify(p));
+      console.log("baseurl", `${this.baseUrl}api/category/`);
+      console.log("url", `${this.dataUrl}category`);
+      return this._http.delete(`${this.dataUrl}category/${p.CategoryID}`);
+    }
+  
+
 
   getCategoryXref(filterParams)   {
     //force result to string
       console.log("url", `${this.baseUrl}api/categoryxref/`);
       if (filterParams!=null)
-        return this._http.get<CategoryXref[]>(`http://localhost:5002/api/categoryxref?${filterParams}`, {observe: 'response'});
+        return this._http.get<CategoryXref[]>(`${this.dataUrl}categoryxref?${filterParams}`, {observe: 'response'});
       else
-        return this._http.get<CategoryXref[]>("http://localhost:5002/api/categoryxref", {observe: 'response'}) ;
+        return this._http.get<CategoryXref[]>(`${this.dataUrl}categoryxref`, {observe: 'response'}) ;
       //return this._http.get<CategoryXref[]>("http://localhost:9000/api/CategoryXref") ;
   }
+
+  saveCategoryXref(ProductID: number, p : Category[] ) {
+    var hldp = JSON.parse(JSON.stringify(p));
+    console.log("baseurl", `${this.baseUrl}api/categoryxref/`);
+    console.log("url", `${this.dataUrl}categoryxref`);
+    return this._http.put(`${this.dataUrl}categoryxref/${ProductID}`,p);
+    //return this._http.put<Product>(`${this.dataUrl}product/${ProductID}`,p);
+    //    return this._http.put<Person>(`${this.baseUrl}api/person/${person.id}`,person);
+      //params: new HttpParams().set('id',`${person.id}`)
+      //.map(result=>this.result=result.json().data);
+  }
+
+
+
+  /*******************************************   Report ******************************************* */
+  getReport(filterParams)   {
+    //force result to string
+      console.log("url", `${this.baseUrl}api/report/`, filterParams);
+      return this._http.get(`${this.dataUrl}report?${filterParams}`);
+    }
 
 }

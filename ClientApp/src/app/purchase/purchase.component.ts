@@ -16,6 +16,8 @@ export class PurchaseComponent implements OnInit {
   //pagedItems: any[];
   Products : Product[] = [];
   selectedProduct: Product;
+  message: string;
+
   currentPage = 0;
   pageSize = 10;
   numberOfPages=0;
@@ -63,14 +65,13 @@ export class PurchaseComponent implements OnInit {
       resProd.body.unshift(p)
       this.selectedProduct=p;
 
-      this.Products = resProd.body;
-
-      this.Purchases = <Purchase[]> _.reduce(resProd.body, function(memo, pr, idx) {
+      //this.Products = resProd.body;
+      this.Products = <Product[]> _.reduce(resProd.body, function(memo, pr, idx) {
         let titl = self.padright(pr.Title, '....................');
         let cnt = self.padright(pr.Count, '.......');
-        const mpr = new Purchase(pr);
+        const mpr = new Product(pr);
         if (mpr.ProductID!=-1) {
-         // mpr.DisplayText = `${titl}${cnt}${mpr.Cost==null?'OVRIDE':mpr.Cost}`
+          mpr.DisplayText = `${titl}${cnt}${mpr.Cost==null?'OVRIDE':mpr.Cost}`
           memo.push(mpr);
         }
         return memo;
@@ -152,20 +153,6 @@ export class PurchaseComponent implements OnInit {
   }
 
 
-  UpdatePurchase() {
-    console.log("UpdatePurchase purchase", this.selectedPurchase);
-    
-
-    this.selectedPurchase = new Purchase();
-    //console.log("ClearPurchase product", this.selectedProduct);
-    this.selectedProduct=this.Products[0];
-    console.log("ClearPurchase product", this.selectedProduct);
-    this.disableAdd = false;
-    this.disableUpdate = true;
-    this.disableDelete = true;
-  
-  }
-
   ClearPurchase() {
     this.selectedPurchase = new Purchase();
     //console.log("ClearPurchase product", this.selectedProduct);
@@ -178,6 +165,79 @@ export class PurchaseComponent implements OnInit {
   
   }
 
+
+  SavePurchase() {
+    console.log("UpdatePurchase purchase", this.selectedPurchase);
+
+    if (this.selectedProduct.Title==""){
+      this.message="An Item Title is required";
+      return;
+    }
+
+    if (this.selectedProduct.Count===0){
+      this.message="An Item Count is required";
+        return;
+    }
+
+    if (this.selectedProduct.Cost!=null && this.selectedProduct.Cost===0){
+      this.message="An Item Cost is required";
+      return;
+    }
+
+    this._dataService.savePurchase(this.selectedPurchase)
+    .subscribe(res => {
+      this.message="Saved!!!";
+      console.log("savePurchase=",res);
+      this.getData();
+    },
+    error  => {
+      console.log("SavePurchase response error", error);
+      this.message=error.statusText;
+    });
+
+
+    this.disableAdd = false;
+    this.disableUpdate = true;
+    this.disableDelete = true;
+
+    this.selectedPurchase = new Purchase();
+    //console.log("ClearPurchase product", this.selectedProduct);
+    this.selectedProduct=this.Products[0];
+    console.log("SavePurchase product", this.selectedProduct);
+  
+  }
+
+  DeletePurchase() {
+    console.log("Delete selectedPurchase", this.selectedPurchase);
+
+    if (this.selectedPurchase.PurchaseID==0){
+      this.message="A Purchase must be selected";
+      return;
+    }
+  
+    this._dataService.deletePurchase(this.selectedPurchase)
+    .subscribe(res => {
+      this.message="Deleted!!!";
+      console.log("deletePurchase=",res);
+      this.getData();
+    },
+    error  => {
+      console.log("DeletePurchase response error", error);
+      this.message=error.statusText;
+    });
+
+
+    this.disableAdd = false;
+    this.disableUpdate = true;
+    this.disableDelete = true;
+
+    this.selectedPurchase = new Purchase();
+    this.selectedProduct=this.Products[0];
+    console.log("SavePurchase product", this.selectedProduct);
+
+  }
+
+
   goToLink(purch) {
     console.log("goToLink purch", purch);
 
@@ -187,6 +247,9 @@ export class PurchaseComponent implements OnInit {
     this.selectedPurchase = purch;
     this.selectedProduct = <Product> _.find(this.Products, [ 'ProductID', purch.ProductID]);
     console.log("goToLink product", this.selectedProduct);
+
+    if (this.selectedProduct.Cost!=null)
+      this.selectedPurchase.CostOverride=null;
 
     this.disableAdd = true;
     this.disableUpdate = false;

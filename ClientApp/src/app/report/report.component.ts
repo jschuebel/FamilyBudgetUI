@@ -1,4 +1,9 @@
 import { Component, ViewChild, ElementRef, OnInit } from '@angular/core';
+import  * as _ from 'lodash';
+import { PurchasedataService } from '../Purchasedata.service';
+//import { Product } from '../Model/Product';
+import { Category } from '../Model/Category';
+//import { CategoryXref } from '../Model/CategoryXref';
 
 @Component({
   selector: 'app-report',
@@ -8,32 +13,93 @@ import { Component, ViewChild, ElementRef, OnInit } from '@angular/core';
 export class ReportComponent implements OnInit {
   private canvas: HTMLCanvasElement;
   private context: CanvasRenderingContext2D;  
+  Categories: Category[];
+  selectedCategory: Category = null;
+  selectedReportBar:boolean = true;
+  selectedReportLine:boolean = false;
+
   // get the element with the #chessCanvas on it
   @ViewChild("purchasesCanvas", {static: false}) purchasesCanvas: ElementRef; 
 
-  constructor() { }
+  constructor(private _dataService:PurchasedataService) { }
 
   ngOnInit() {
+    this._dataService.getCategories(null)
+    .subscribe(cat => {
+
+      var p = new Category();
+      p.CategoryID=-1;
+      p.Title="Select Category";
+      cat.body.unshift(p)
+      this.selectedCategory=p;
+      this.Categories=cat.body;
+      console.log("Categories=",this.Categories);
+    },
+    err => {
+      console.log("Error from getCategorys", err)
+    });
+
+
+  }
+
+  ngAfterViewInit() { // wait for the view to init before using the element
     this.canvas = this.purchasesCanvas.nativeElement;
     this.context = this.canvas.getContext("2d");
   }
 
-  ngAfterViewInit() { // wait for the view to init before using the element
-    //this.drawGraph();
+
+  GenerateReport() {
+      //    if (this.isFilteringRequest)
+      //    filterQuery=`&filter[logic]=and&filter[filters][0][field]=${this.filterField}&filter[filters][0][operator]=${filterOp}&filter[filters][0][value]=${this.filterValue}`;
+      //  var filterParams = `page=${this.currentPage}&pageSize=${this.pageSize}&sort[0][field]=${this.sortColumn}&sort[0][dir]=${this.sortDirection}${filterQuery}`;
+      //http://localhost:5002/api/report?page=0&pageSize=99&sort[0][field]=PurchaseDate&sort[0][dir]=desc&filter[logic]=and&filter[filters][0][field]=CategoryID&filter[filters][0][operator]=eq&filter[filters][0][value]=2
+      var filterParams = `page=0&pageSize=99&sort[0][field]=PurchaseDate&sort[0][dir]=asc&filter[logic]=and&filter[filters][0][field]=CategoryID&filter[filters][0][operator]=eq&filter[filters][0][value]=${this.selectedCategory.CategoryID}`
+      this._dataService.getReport(filterParams)
+      .subscribe(rptdata => {
+        console.log("CategoryChange rptdata=",rptdata);
+        if (this.selectedReportLine)
+          this.drawGraph(rptdata);
+
+        //let dataArr = [];
+        //  let rptRow = {month : 1, monthYear : "11/12/2019", Cost : 46};
+        //  dataArr.push(rptRow);
+
+        //  let rptRow2 = {monthYear : "12/2019", Cost : 146};
+        //  dataArr.push(rptRow2);
+        if (this.selectedReportBar) {
+          let options = {padding:20, gridScale:25, gridColor:"#67b6c7", data:rptdata};
+          this.drawBarchart(options);
+        }
+
+      },
+      err => {
+        console.log("Error from getCategorys", err)
+      });
+
+  }
   
-      let dataArr = [];
-      let rptRow = {month : 1, monthYear : "11/12/2019", Cost : 46};
-      dataArr.push(rptRow);
-
-      let options = {padding:20, gridScale:25, gridColor:"#67b6c7", data:dataArr};
-
-    this.drawBarchart(options);
+  CategoryChange() {
+    console.log("CategoryChange selectedCategory=",this.selectedCategory);
+    this.GenerateReport();
+  }
+  
+  ReportTypeChange() {
+    this.selectedReportBar=!this.selectedReportBar;
+    this.selectedReportLine=!this.selectedReportLine;
+    console.log("selectedReportBar", this.selectedReportBar)
+    console.log("selectedReportLine", this.selectedReportLine)
+    console.log("CategoryChange selectedCategory=",this.selectedCategory);
+    if (this.selectedCategory.CategoryID!=-1)
+      this.GenerateReport();
   }
 
-  drawGraph() {
-    let dataArr = [];
-    let rptRow = {month : 1, monthYear : "11/12/2019", Cost : 46};
-    dataArr.push(rptRow);
+  drawGraph(dataArr) {
+    //let dataArr = [];
+    //let rptRow = {monthYear : "11/2019", Cost : 46};
+    //dataArr.push(rptRow);
+
+    //let rptRow2 = {monthYear : "12/2019", Cost : 146};
+    //dataArr.push(rptRow2);
 
 
     var GRAPH_TOP = 25;      
@@ -103,12 +169,12 @@ export class ReportComponent implements OnInit {
         this.context.font = "12px Arial";       
         this.context.moveTo( GRAPH_LEFT, ( GRAPH_HEIGHT - dataArr[ 0 ].Cost / largest * GRAPH_HEIGHT ) + GRAPH_TOP );      
         // draw reference value for day of the week   
-        this.context.fillText( dataArr[ 0 ].monthYear, 15, GRAPH_BOTTOM + 25);      
+        this.context.fillText( dataArr[ 0 ].monthyear, 15, GRAPH_BOTTOM + 25);      
         for( var i = 1; i < arrayLen; i++ )
         {
           this.context.lineTo( GRAPH_RIGHT / arrayLen * i + GRAPH_LEFT, ( GRAPH_HEIGHT - dataArr[ i ].Cost / largest * GRAPH_HEIGHT ) + GRAPH_TOP );          
             // draw reference value for day of the week          
-            this.context.fillText(dataArr[i].monthYear, GRAPH_RIGHT / arrayLen * i, GRAPH_BOTTOM + 25);      
+            this.context.fillText(dataArr[i].monthyear, GRAPH_RIGHT / arrayLen * i, GRAPH_BOTTOM + 25);      
         }      
         this.context.stroke();  
   }
@@ -205,7 +271,7 @@ export class ReportComponent implements OnInit {
             this.context.textAlign="center";
             this.context.fillStyle = "#000000";
             this.context.font = "bold 14px Arial";
-            this.context.fillText(categ.monthYear, (options.padding + barIndex * barSize)+(15 + (barSize/4)),this.canvas.height);
+            this.context.fillText(categ.monthyear, (options.padding + barIndex * barSize)+(15 + (barSize/4)),this.canvas.height);
             this.context.restore();  
     
 

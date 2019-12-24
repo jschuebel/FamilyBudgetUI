@@ -31,6 +31,7 @@ import { ReportComponent } from './Report/Report.component';
       { path: '', component: HomeComponent, pathMatch: 'full' },
       { path: 'purchase', component: PurchaseComponent },
       { path: 'product', component: ProductComponent },
+      { path: 'category', component: CategoryComponent },
       { path: 'report', component: ReportComponent },
     ])
   ],

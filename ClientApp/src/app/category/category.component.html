@@ -6,6 +6,7 @@
       </div>
     </div>
   </div>
+  <div class="text-danger" *ngIf="message">{{message}}</div>
   <div  style="background-color: lightgreen;"  class="container-fluid"> 
     <div class="row"><div class="col-sm-1">&nbsp;</div></div>
     <div class="row"> 
@@ -14,10 +15,10 @@
     </div>
     <div class="row"><div class="col-sm-1">&nbsp;</div></div>
     <div class="row"> 
-        <div class="col-sm-1"><button class="btn btn-primary" [disabled]="disableAdd"  >Add</button></div> 
+        <div class="col-sm-1"><button class="btn btn-primary" [disabled]="disableAdd"  (click)="SaveCategory()" >Add</button></div> 
         <div class="col-sm-1"><button class="btn btn-primary" [disabled]="disableClear" (click)="ClearCategory()" >Clear</button></div> 
-        <div class="col-sm-1"><button class="btn btn-primary" [disabled]="disableUpdate"  (click)="UpdateCategory()" >Update</button></div> 
-        <div class="col-sm-1"><button class="btn btn-primary" [disabled]="disableDelete" >Del</button></div> 
+        <div class="col-sm-1"><button class="btn btn-primary" [disabled]="disableUpdate"  (click)="SaveCategory()" >Update</button></div> 
+        <div class="col-sm-1"><button class="btn btn-primary" [disabled]="disableDelete" (click)="DeleteCategory()">Del</button></div> 
     </div>
   </div>
 
@@ -27,7 +28,7 @@
       <th>ID</th>
       <th>Title</th>
     </tr>
-    <tr *ngFor="let aw of pagedItems"  (click)="goToLink(aw)"  (mouseover)="highlightRow(aw)" [ngClass] = "{'highlight' : aw.CategoryID == selectedCategoryID}">
+    <tr *ngFor="let aw of Categories"  (click)="goToLink(aw)"  (mouseover)="highlightRow(aw)" [ngClass] = "{'highlight' : aw.CategoryID == selectedCategoryID}">
         <td>{{aw.CategoryID}}</td>
         <td>{{aw.Title}}</td>
       </tr>
