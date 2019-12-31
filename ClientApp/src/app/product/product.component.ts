@@ -100,8 +100,9 @@ export class ProductComponent implements OnInit {
     //var filterParams = `page=${this.currentPage}&pageSize=${this.pageSize}&sort[0][field]=${this.sortColumn}&sort[0][dir]=${this.sortDirection}${filterQuery}`;
     
     var filterParams = `page=${this.currentPage}&pageSize=${this.pageSize}&sort[0][field]=${this.sortColumn}&sort[0][dir]=${this.sortDirection}`;
+    var filterParamsCat = "page=0&pageSize=999&sort[0][field]=Title&sort[0][dir]=asc";
     forkJoin(
-      this._dataService.getCategories(null),
+      this._dataService.getCategories(filterParamsCat),
       this._dataService.getCategoryXref(null),
       this._dataService.getProducts(filterParams)
       // getMultiValueObservable(), forkJoin on works for observables that complete
@@ -202,59 +203,59 @@ export class ProductComponent implements OnInit {
       return;
     }
 
-    //**********First save xrefs
-    var checkedCats = <Category[]> _.reduce(this.Categorys, function(memo, cat, idx) {
-      //console.log("saveProduct cat=",cat);
-      if (cat.wasChecked) {
-        memo.push(cat);
-      }
-      return memo;
-    }, []);
-    
-    console.log("SaveProduct checkedCats",checkedCats);
-    if (checkedCats!=null && checkedCats.length>0) {
-      this._dataService.saveCategoryXref(this.selectedProduct.ProductID,  checkedCats)
-      .subscribe(res => {
-        console.log("saveProduct saveCategoryXref=",res);
-        this.getData();
-      },
-      error  => {
-        console.log("SaveProduct response error", error);
-        this.message=error.error.CategoryXrefPut;
-      });
-    }
-//*********** testing
-    this.disableAdd = false;
-    this.disableUpdate = true;
-    this.disableDelete = true;
-
-    this.selectedProduct = new Product();
-    this.selectedProduct.Cost=null;
-    this.hasOverride=true;
-    return;
-//*********** testing
-
-
-    //**********Next save product
+    //**********First save product
     this._dataService.saveProduct(this.selectedProduct)
     .subscribe(res => {
       this.message="Saved!!!";
-      console.log("saveProduct=",res);
-      this.getData();
+      console.log("saveProduct res=",res);
+      this.selectedProduct = res;
+
+    //**********Next save xrefs
+    var checkedCats = <Category[]> _.reduce(this.Categorys, function(memo, cat, idx) {
+        //console.log("saveProduct cat=",cat);
+        if (cat.wasChecked) {
+          memo.push(cat);
+        }
+        return memo;
+      }, []);
+      
+      console.log("SaveProduct checkedCats",checkedCats);
+      if (checkedCats!=null && checkedCats.length>0) {
+        console.log("saveProduct saveCategoryXref ProductID=",this.selectedProduct.ProductID);
+        this._dataService.saveCategoryXref(this.selectedProduct.ProductID,  checkedCats)
+        .subscribe(xres => {
+          console.log("saveProduct saveCategoryXref xres=",xres);
+          this.disableAdd = false;
+          this.disableUpdate = true;
+          this.disableDelete = true;
+      
+          this.selectedProduct = new Product();
+          this.selectedProduct.Cost=null;
+          this.hasOverride=true;
+
+          this.getData();
+        },
+        error  => {
+          console.log("SaveProduct response error", error);
+          this.message=error.error.CategoryXrefPut;
+        });
+      }
+      else {
+        this.disableAdd = false;
+        this.disableUpdate = true;
+        this.disableDelete = true;
+    
+        this.selectedProduct = new Product();
+        this.selectedProduct.Cost=null;
+        this.hasOverride=true;
+
+        this.getData();
+      }
     },
     error  => {
       console.log("SaveProduct response error", error);
       this.message=error.statusText;
     });
-
-
-    this.disableAdd = false;
-    this.disableUpdate = true;
-    this.disableDelete = true;
-
-    this.selectedProduct = new Product();
-    this.selectedProduct.Cost=null;
-    this.hasOverride=true;
   
   }
 

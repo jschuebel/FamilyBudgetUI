@@ -167,7 +167,8 @@ export class PurchaseComponent implements OnInit {
 
 
   SavePurchase() {
-    console.log("UpdatePurchase purchase", this.selectedPurchase);
+    console.log("SavePurchase purchase", this.selectedPurchase);
+    console.log("SavePurchase product", this.selectedProduct);
 
     if (this.selectedProduct.Title==""){
       this.message="An Item Title is required";
@@ -184,6 +185,12 @@ export class PurchaseComponent implements OnInit {
       return;
     }
 
+    if (this.selectedProduct.Cost==null && (this.selectedPurchase.CostOverride==null || (this.selectedPurchase.CostOverride!=null && this.selectedPurchase.CostOverride===0))){
+      this.message="A Cost Override is required";
+      return;
+    }
+
+    this.selectedPurchase.ProductID=this.selectedProduct.ProductID;
     this._dataService.savePurchase(this.selectedPurchase)
     .subscribe(res => {
       this.message="Saved!!!";
@@ -203,7 +210,6 @@ export class PurchaseComponent implements OnInit {
     this.selectedPurchase = new Purchase();
     //console.log("ClearPurchase product", this.selectedProduct);
     this.selectedProduct=this.Products[0];
-    console.log("SavePurchase product", this.selectedProduct);
   
   }
 

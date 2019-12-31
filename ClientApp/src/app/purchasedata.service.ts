@@ -18,7 +18,8 @@ import { CategoryXref } from './Model/CategoryXref';
   providedIn: 'root'
 })
 export class PurchasedataService {
-  dataUrl = "http://localhost:5002/api/";
+  //dataUrl = "http://localhost:5002/api/";
+  dataUrl = "https://www.schuebelsoftware.com/fbplannerapi/api/";
   constructor(private _http: HttpClient, @Inject('BASE_URL') private baseUrl: string) { }
 
   /*******************************************   Products ******************************************* */
@@ -62,9 +63,9 @@ export class PurchasedataService {
       console.log("url", `${this.baseUrl}api/purchase/`);
       console.log("getProducts filterParams=", filterParams);
       if (filterParams!=null)
-        return this._http.get<Product[]>(`http://localhost:5002/api/purchase?${filterParams}`, {observe: 'response'});
+        return this._http.get<Product[]>(`${this.dataUrl}purchase?${filterParams}`, {observe: 'response'});
       else
-        return this._http.get<Product[]>("http://localhost:5002/api/purchase", {observe: 'response'});
+        return this._http.get<Product[]>(`${this.dataUrl}purchase`, {observe: 'response'});
       //return this._http.get<Purchase[]>("http://localhost:9000/api/purchase", {observe: 'response'}) ;
   }
 
@@ -72,7 +73,7 @@ export class PurchasedataService {
     var hldp = JSON.parse(JSON.stringify(p));
     console.log("baseurl", `${this.baseUrl}api/purchase/`);
     console.log("url", `${this.dataUrl}purchase`);
-    if (p.ProductID===0)
+    if (p.PurchaseID===0)
       return this._http.post<Purchase>(`${this.dataUrl}purchase`,p);
     else
       return this._http.put<Purchase>(`${this.dataUrl}purchase`,p);

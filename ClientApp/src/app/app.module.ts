@@ -9,8 +9,8 @@ import { NavMenuComponent } from './nav-menu/nav-menu.component';
 import { HomeComponent } from './home/home.component';
 import { PurchaseComponent } from './purchase/purchase.component';
 import { ProductComponent } from './product/product.component';
-import { CategoryComponent } from './Category/Category.component';
-import { ReportComponent } from './Report/Report.component';
+import { CategoryComponent } from './category/category.component';
+import { ReportComponent } from './report/report.component';
 
 
 @NgModule({

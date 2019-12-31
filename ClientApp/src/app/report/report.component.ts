@@ -67,7 +67,7 @@ export class ReportComponent implements OnInit {
         //  let rptRow2 = {monthYear : "12/2019", Cost : 146};
         //  dataArr.push(rptRow2);
         if (this.selectedReportBar) {
-          let options = {padding:20, gridScale:25, gridColor:"#67b6c7", data:rptdata};
+          let options = {padding:30, gridScale:25, gridColor:"#67b6c7", data:rptdata};
           this.drawBarchart(options);
         }
 

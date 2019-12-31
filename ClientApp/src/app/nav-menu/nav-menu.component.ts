@@ -28,4 +28,24 @@ export class NavMenuComponent {
 
   }
 
+
+  openLogin(event) {
+    console.log("openLogin");
+  }
+
+
+  Logout(event) {
+    console.log("Logout");
+   }
+
+  Login() {
+    console.log("Login");
+   }
+
+  checkAuth(event) {
+
+    console.log("checkAuth");
+   
+  }
+
 }
